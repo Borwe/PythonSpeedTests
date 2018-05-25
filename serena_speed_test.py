@@ -41,17 +41,26 @@ for point in servers:
         if part.get('country').find('Russian Federation')!=-1:
             russia_servers.append(part)
 
-"""for kenya_s in kenyan_servers:
-    k_s=int(kenya_s)
-"""
-#print(kenyan_servers[0])
-servers=[uk_servers[5].get('id')]
-s.get_servers(servers)
+
+def get_country_servers_by_id(country_servers):
+    servers_by_id=[]
+    for server in country_servers:
+        servers_by_id.append(server.get('id'))
+
+    return servers_by_id
+
+def bytes_to_megabytes(bytes):
+    return round((bytes/(10**6)))
+
+print("SERVER IDS",get_country_servers_by_id(kenyan_servers))
+
+s.get_servers(get_country_servers_by_id(kenyan_servers))
 s.get_best_server()
 s.download()
 s.upload()
 print(s.results.share())
-
+print("DOWNLOAD: ",bytes_to_megabytes(s.results.download))
+print("UPLOAD: ",bytes_to_megabytes(s.results.upload))
 
 
 """#specific servers file
