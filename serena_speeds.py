@@ -2,7 +2,6 @@ import speedtest
 import xlsxwriter
 import os.path
 import datetime
-import openpyxl
 
 def check_or_createFile():
     # check if file exists, if not the create it
@@ -161,17 +160,17 @@ class SerenaSpeedTester:
         return round((bytes/(10**6)),2)
 
     #set time of checkup to evening
-    def setTimeEvening():
+    def setTimeEvening(self):
         self.time='evening'
 
     #set time of checkup to morning
-    def setTimeMorning():
+    def setTimeMorning(self):
         self.time='morning'
 
     #put data into file based on location in correct collumn
     #on correct worksheet
     #(Using JTL as make shift worksheet_name)
-    def __enter_speeds_to_file__(file,download,upload,location,worksheet_name):
+    def __enter_speeds_to_file__(self,file,download,upload,location,worksheet_name):
 
         #setting self.time to evening
         #remove on production stage
@@ -180,6 +179,8 @@ class SerenaSpeedTester:
         #fake worksheet_name used (JTL)
         workbook=xlsxwriter.Workbook(file)
         worksheet=workbook.get_worksheet_by_name('JTL')
+
+        #USING FAKE LOCATION DEFAULT OF KENYA
 
         #get current date
         date=str(datetime.datetime.now().strftime("%m/%d/%Y"))
@@ -190,11 +191,9 @@ class SerenaSpeedTester:
         kenya_evening=['V','W']
 
         if(self.time=='evening'):
-            #loop through 31 rows in column '0' and check for date, if none, add
-            #todays date at row 5 on column 'O'
-            found=False
-            for cell in range(5,35):
-                worksheet.
+            cell_no=int(datetime.datetime.now().strftime("%d"))+5
+            #worksheet.write(str(date_collumns[1]+'%d')%(cell_no),date)
+            
 
     #get speeds in Kenya
     def getSpeedsByInKenya(self):
@@ -210,6 +209,11 @@ class SerenaSpeedTester:
 
         file=check_or_createFile()
         print('adding download and uploads to File: '+file)
+        download=self.__bytes_to_megabytes__(self.s.results.download)
+        upload=self.__bytes_to_megabytes__(self.s.results.upload)
+
+        #fill up sheet(USING JTL AS TEST)
+        #self.__enter_speeds_to_file__(file,download,upload,'kenya','JTL')
 
     #get speeds in UK
     def getSpeedsByInUK(self):
