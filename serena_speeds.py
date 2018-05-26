@@ -2,6 +2,14 @@ import speedtest
 import xlsxwriter
 import os.path
 import datetime
+import openpyxl
+from openpyxl.styles.borders import Border,Side
+from openpyxl.styles import Font, PatternFill, Alignment
+
+thin_border=Border(left=Side(style='thin'),
+                                           right=Side(style='thin'),
+                                           top=Side(style='thin'),
+                                           bottom=Side(style='thin'))
 
 def check_or_createFile():
     # check if file exists, if not the create it
@@ -12,46 +20,48 @@ def check_or_createFile():
         print("File ",file," exists")
     else:
         print("File doesn't exists, creating it")
-        workbook=xlsxwriter.Workbook(file)
+        workbook=openpyxl.Workbook()
 
         #creating worksheets
-        lqd_worksheet=workbook.add_worksheet('LQD')
-        jtl_worksheet=workbook.add_worksheet('JTL')
-        saf_worksheet=workbook.add_worksheet('SAF')
+        lqd_worksheet=workbook.active
+        lqd_worksheet.title="LQD"
+        jtl_worksheet=workbook.create_sheet('JTL')
+        saf_worksheet=workbook.create_sheet('SAF')
 
         
         __fill_up_excel__(workbook,jtl_worksheet,'JTL')
-        __fill_up_excel__(workbook,lqd_worksheet,'LQD')
-        __fill_up_excel__(workbook,saf_worksheet,'SAF')
+        #__fill_up_excel__(workbook,lqd_worksheet,'LQD')
+        #__fill_up_excel__(workbook,saf_worksheet,'SAF')
         
+        workbook.save(file)
         workbook.close()
 
     return file
 
 #fill up file with necessary titles for collumns
 def __fill_up_excel__(workbook,worksheet,link_type):
-    #morning text format
-    cellB1=workbook.add_format()
-    cellB1.set_italic()
-    cellB1.set_underline()
-    cellB1.set_bold()
-    cellB1.set_bg_color('yellow')
-
-    #BOLD big title fonts
-    bold_bigTitle_format=workbook.add_format()
-    bold_bigTitle_format.set_bold()
-    bold_bigTitle_format.set_size(14)
 
     #add morning and afternoon text
-    worksheet.write('B1','Morning',cellB1)
-    worksheet.write('O1','Afternoon',cellB1)
+    worksheet['B1']='Morning'
+    worksheet['B1'].font=Font(bold=True,italic=True,underline='single')
+    worksheet['B1'].fill=PatternFill(start_color='FFCC00',
+                                     end_color='FFCC00', fill_type="solid")
+    worksheet['O1']='Afternoon'
+    worksheet['O1'].font=Font(bold=True,italic=True,underline='single')
+    worksheet['O1'].fill=PatternFill(start_color='FFCC00',
+                                     end_color='FFCC00', fill_type="solid")
 
     #create borders and titles
-    bold_bigTitle_format.set_align('center')
-    worksheet.merge_range('E2:H2',str(link_type+' LINK SPEEDTEST'),bold_bigTitle_format)
-    worksheet.merge_range('R2:U2',str(link_type+' LINK SPEEDTEST'),bold_bigTitle_format)
+    worksheet['E2']=str(link_type+' LINK SPEEDTEST')
+    worksheet['E2'].font=Font(bold=True,size=14)
+    worksheet['E2'].alignment=Alignment(horizontal='center')
+    worksheet.merge_cells('E2:H2')
+    worksheet['R2']=str(link_type+' LINK SPEEDTEST')
+    worksheet['R2'].font=Font(bold=True,size=14)
+    worksheet['R2'].alignment=Alignment(horizontal='center')
+    worksheet.merge_cells('R2:U2')
 
-    #Dark border format
+    """#Dark border format
     dark_border_format=workbook.add_format()
     dark_border_format.set_bold()
     dark_border_format.set_size(14)
@@ -100,6 +110,8 @@ def __fill_up_excel__(workbook,worksheet,link_type):
     worksheet.write('W4','Upload',bold_title_normal_border)
     worksheet.write('X4','Remarks',bold_title_normal_border)
     worksheet.write('Y4','By',bold_title_normal_border)
+
+    """
 
 class SerenaSpeedTester:
 
@@ -177,8 +189,8 @@ class SerenaSpeedTester:
         self.setTimeEvening()
         
         #fake worksheet_name used (JTL)
-        workbook=xlsxwriter.Workbook(file)
-        worksheet=workbook.get_worksheet_by_name('JTL')
+        workbook=openpyxl.load_workbook(file)
+        worksheet=workbook['JTL']
 
         #USING FAKE LOCATION DEFAULT OF KENYA
 
@@ -192,7 +204,9 @@ class SerenaSpeedTester:
 
         if(self.time=='evening'):
             cell_no=int(datetime.datetime.now().strftime("%d"))+5
-            #worksheet.write(str(date_collumns[1]+'%d')%(cell_no),date)
+            print('CELL: ',str(date_collumns[1]+'%d')%(cell_no))
+            worksheet[str(date_collumns[1]+'%d')%(cell_no)]=date
+            workbook.save(file)
             
 
     #get speeds in Kenya
@@ -213,7 +227,7 @@ class SerenaSpeedTester:
         upload=self.__bytes_to_megabytes__(self.s.results.upload)
 
         #fill up sheet(USING JTL AS TEST)
-        #self.__enter_speeds_to_file__(file,download,upload,'kenya','JTL')
+        self.__enter_speeds_to_file__(file,download,upload,'kenya','JTL')
 
     #get speeds in UK
     def getSpeedsByInUK(self):
