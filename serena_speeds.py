@@ -1,5 +1,4 @@
 import speedtest
-import xlsxwriter
 import os.path
 import datetime
 import openpyxl
@@ -30,8 +29,8 @@ def check_or_createFile():
 
         
         __fill_up_excel__(workbook,jtl_worksheet,'JTL')
-        #__fill_up_excel__(workbook,lqd_worksheet,'LQD')
-        #__fill_up_excel__(workbook,saf_worksheet,'SAF')
+        __fill_up_excel__(workbook,lqd_worksheet,'LQD')
+        __fill_up_excel__(workbook,saf_worksheet,'SAF')
         
         workbook.save(file)
         workbook.close()
@@ -61,57 +60,99 @@ def __fill_up_excel__(workbook,worksheet,link_type):
     worksheet['R2'].alignment=Alignment(horizontal='center')
     worksheet.merge_cells('R2:U2')
 
-    """#Dark border format
-    dark_border_format=workbook.add_format()
-    dark_border_format.set_bold()
-    dark_border_format.set_size(14)
-    dark_border_format.set_border(2)
-    dark_border_format.set_align('center')
-
-    #BOLD TITLE WITH NORMAL BORDER FORMAT
-    bold_title_normal_border=workbook.add_format()
-    bold_title_normal_border.set_bold()
-    bold_title_normal_border.set_size(12)
-    bold_title_normal_border.set_border(1)
-    bold_title_normal_border.set_align('center')
-
+    #For dark borders
+    dark_border = Border(left=Side(border_style='thick'),
+                         right=Side(border_style='thick'),
+                         top=Side(border_style='thick'),
+                         bottom=Side(border_style='thick'))
+    dark_border_font=Font(size=14,bold=True)
+    dark_border_alignment=Alignment(horizontal='center')
+    
     #morning table
-    worksheet.merge_range('C3:D3','UK',dark_border_format)
-    worksheet.merge_range('E3:F3','US',dark_border_format)
-    worksheet.merge_range('G3:H3','EUROPE',dark_border_format)
-    worksheet.merge_range('I3:J3','NAIROBI',dark_border_format)
+    worksheet['C3']='UK'
+    worksheet.merge_cells('C3:D3')
+    worksheet['C3'].alignment=dark_border_alignment
+    worksheet['C3'].font=dark_border_font
+    worksheet['C3'].border=dark_border
+
+    worksheet['E3']='US'
+    worksheet.merge_cells('E3:F3')
+    worksheet['E3'].alignment=dark_border_alignment
+    worksheet['E3'].font=dark_border_font
+    worksheet['E3'].border=dark_border
+
+    worksheet['G3']='EUROPE'
+    worksheet.merge_cells('G3:H3')
+    worksheet['G3'].alignment=dark_border_alignment
+    worksheet['G3'].font=dark_border_font
+    worksheet['G3'].border=dark_border
+    
+    worksheet['I3']='NAIROBI'
+    worksheet.merge_cells('I3:J3')
+    worksheet['I3'].alignment=dark_border_alignment
+    worksheet['I3'].font=dark_border_font
+    worksheet['I3'].border=dark_border
+    
     #DATE raw titles
-    worksheet.write('B4','DATE',bold_title_normal_border)
-    worksheet.write('C4','Download',bold_title_normal_border)
-    worksheet.write('D4','Upload',bold_title_normal_border)
-    worksheet.write('E4','Download',bold_title_normal_border)
-    worksheet.write('F4','Upload',bold_title_normal_border)
-    worksheet.write('G4','Download',bold_title_normal_border)
-    worksheet.write('H4','Upload',bold_title_normal_border)
-    worksheet.write('I4','Download',bold_title_normal_border)
-    worksheet.write('J4','Upload',bold_title_normal_border)
-    worksheet.write('K4','Remarks',bold_title_normal_border)
-    worksheet.write('L4','By',bold_title_normal_border)
+    __fill_date_row_cells__(worksheet,'B4','DATE')
+    __fill_date_row_cells__(worksheet,'C4','Download')
+    __fill_date_row_cells__(worksheet,'D4','Upload')
+    __fill_date_row_cells__(worksheet,'E4','Download')
+    __fill_date_row_cells__(worksheet,'F4','Upload')
+    __fill_date_row_cells__(worksheet,'G4','Download')
+    __fill_date_row_cells__(worksheet,'H4','Upload')
+    __fill_date_row_cells__(worksheet,'I4','Download')
+    __fill_date_row_cells__(worksheet,'J4','Upload')
+    __fill_date_row_cells__(worksheet,'K4','Remarks')
+    __fill_date_row_cells__(worksheet,'L4','By')
     
     #evening table
-    worksheet.merge_range('P3:Q3','UK',dark_border_format)
-    worksheet.merge_range('R3:S3','US',dark_border_format)
-    worksheet.merge_range('T3:U3','EUROPE',dark_border_format)
-    worksheet.merge_range('V3:W3','NAIROBI',dark_border_format)
-    #DATE raw titles
-    worksheet.write('O4','DATE',bold_title_normal_border)
-    worksheet.write('P4','Download',bold_title_normal_border)
-    worksheet.write('Q4','Upload',bold_title_normal_border)
-    worksheet.write('R4','Download',bold_title_normal_border)
-    worksheet.write('S4','Upload',bold_title_normal_border)
-    worksheet.write('T4','Download',bold_title_normal_border)
-    worksheet.write('U4','Upload',bold_title_normal_border)
-    worksheet.write('V4','Download',bold_title_normal_border)
-    worksheet.write('W4','Upload',bold_title_normal_border)
-    worksheet.write('X4','Remarks',bold_title_normal_border)
-    worksheet.write('Y4','By',bold_title_normal_border)
+    worksheet['P3']='UK'
+    worksheet.merge_cells('P3:Q3')
+    worksheet['P3'].alignment=dark_border_alignment
+    worksheet['P3'].font=dark_border_font
+    worksheet['P3'].border=dark_border
 
-    """
+    worksheet['R3']='US'
+    worksheet.merge_cells('R3:S3')
+    worksheet['R3'].alignment=dark_border_alignment
+    worksheet['R3'].font=dark_border_font
+    worksheet['R3'].border=dark_border
+
+    worksheet['T3']='EUROPE'
+    worksheet.merge_cells('T3:U3')
+    worksheet['T3'].alignment=dark_border_alignment
+    worksheet['T3'].font=dark_border_font
+    worksheet['T3'].border=dark_border
+
+    worksheet['V3']='NAIROBI'
+    worksheet.merge_cells('V3:W3')
+    worksheet['V3'].alignment=dark_border_alignment
+    worksheet['V3'].font=dark_border_font
+    worksheet['V3'].border=dark_border
+    #DATE raw titles
+
+    __fill_date_row_cells__(worksheet,'O4','DATE')
+    __fill_date_row_cells__(worksheet,'P4','Download')
+    __fill_date_row_cells__(worksheet,'Q4','Upload')
+    __fill_date_row_cells__(worksheet,'R4','Download')
+    __fill_date_row_cells__(worksheet,'S4','Upload')
+    __fill_date_row_cells__(worksheet,'T4','Download')
+    __fill_date_row_cells__(worksheet,'U4','Upload')
+    __fill_date_row_cells__(worksheet,'V4','Download')
+    __fill_date_row_cells__(worksheet,'W4','Upload')
+    __fill_date_row_cells__(worksheet,'X4','Remarks')
+    __fill_date_row_cells__(worksheet,'Y4','By')
+
+def __fill_date_row_cells__(worksheet,cell,txt):
+    #for date row cells
+    date_row_font=Font(size=12, bold=True)
+    dark_border_alignment=Alignment(horizontal='center')
+    
+    worksheet[cell]=txt
+    worksheet[cell].border=thin_border
+    worksheet[cell].font=date_row_font
+    worksheet[cell].alignment=dark_border_alignment
 
 class SerenaSpeedTester:
 
