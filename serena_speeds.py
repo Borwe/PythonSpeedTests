@@ -70,28 +70,40 @@ def __fill_up_excel__(workbook,worksheet,link_type):
     
     #morning table
     worksheet['C3']='UK'
-    worksheet.merge_cells('C3:D3')
     worksheet['C3'].alignment=dark_border_alignment
     worksheet['C3'].font=dark_border_font
     worksheet['C3'].border=dark_border
+    worksheet['D3'].alignment=dark_border_alignment
+    worksheet['D3'].font=dark_border_font
+    worksheet['D3'].border=dark_border
+    worksheet.merge_cells('C3:D3')
 
     worksheet['E3']='US'
-    worksheet.merge_cells('E3:F3')
     worksheet['E3'].alignment=dark_border_alignment
     worksheet['E3'].font=dark_border_font
     worksheet['E3'].border=dark_border
+    worksheet['F3'].alignment=dark_border_alignment
+    worksheet['F3'].font=dark_border_font
+    worksheet['F3'].border=dark_border
+    worksheet.merge_cells('E3:F3')
 
     worksheet['G3']='EUROPE'
-    worksheet.merge_cells('G3:H3')
     worksheet['G3'].alignment=dark_border_alignment
     worksheet['G3'].font=dark_border_font
     worksheet['G3'].border=dark_border
+    worksheet['H3'].alignment=dark_border_alignment
+    worksheet['H3'].font=dark_border_font
+    worksheet['H3'].border=dark_border
+    worksheet.merge_cells('G3:H3')
     
     worksheet['I3']='NAIROBI'
-    worksheet.merge_cells('I3:J3')
     worksheet['I3'].alignment=dark_border_alignment
     worksheet['I3'].font=dark_border_font
     worksheet['I3'].border=dark_border
+    worksheet['J3'].alignment=dark_border_alignment
+    worksheet['J3'].font=dark_border_font
+    worksheet['J3'].border=dark_border
+    worksheet.merge_cells('I3:J3')
     
     #DATE raw titles
     __fill_date_row_cells__(worksheet,'B4','DATE')
@@ -108,28 +120,40 @@ def __fill_up_excel__(workbook,worksheet,link_type):
     
     #evening table
     worksheet['P3']='UK'
-    worksheet.merge_cells('P3:Q3')
     worksheet['P3'].alignment=dark_border_alignment
     worksheet['P3'].font=dark_border_font
     worksheet['P3'].border=dark_border
+    worksheet['Q3'].alignment=dark_border_alignment
+    worksheet['Q3'].font=dark_border_font
+    worksheet['Q3'].border=dark_border
+    worksheet.merge_cells('P3:Q3')
 
     worksheet['R3']='US'
-    worksheet.merge_cells('R3:S3')
     worksheet['R3'].alignment=dark_border_alignment
     worksheet['R3'].font=dark_border_font
     worksheet['R3'].border=dark_border
+    worksheet['S3'].alignment=dark_border_alignment
+    worksheet['S3'].font=dark_border_font
+    worksheet['S3'].border=dark_border
+    worksheet.merge_cells('R3:S3')
 
     worksheet['T3']='EUROPE'
-    worksheet.merge_cells('T3:U3')
     worksheet['T3'].alignment=dark_border_alignment
     worksheet['T3'].font=dark_border_font
     worksheet['T3'].border=dark_border
+    worksheet['U3'].alignment=dark_border_alignment
+    worksheet['U3'].font=dark_border_font
+    worksheet['U3'].border=dark_border
+    worksheet.merge_cells('T3:U3')
 
     worksheet['V3']='NAIROBI'
-    worksheet.merge_cells('V3:W3')
     worksheet['V3'].alignment=dark_border_alignment
     worksheet['V3'].font=dark_border_font
     worksheet['V3'].border=dark_border
+    worksheet['W3'].alignment=dark_border_alignment
+    worksheet['W3'].font=dark_border_font
+    worksheet['W3'].border=dark_border
+    worksheet.merge_cells('V3:W3')
     #DATE raw titles
 
     __fill_date_row_cells__(worksheet,'O4','DATE')
@@ -220,18 +244,28 @@ class SerenaSpeedTester:
     def setTimeMorning(self):
         self.time='morning'
 
-    #put data into file based on location in correct collumn
-    #on correct worksheet
-    #(Using JTL as make shift worksheet_name)
-    def __enter_speeds_to_file__(self,file,download,upload,location,worksheet_name):
+    #set worksheet to match JTL
+    def setWorksheetJTL(self):
+        self.worksheetName='JTL'
 
-        #setting self.time to evening
-        #remove on production stage
-        self.setTimeEvening()
+    #set worksheet to SAF
+    def setWorkSheetSAF(self):
+        self.worksheetName='SAF'
+
+    #set worksheet to LQD
+    def setWorkSheetLQD(self):
+        self.worksheetName='JTL'
+
+    #get current worksheet
+    def getCurrentWorkSheet(self):
+        return self.worksheetName
+
+    #put data into file based on location in correct collumn
+    def __enter_speeds_to_file__(self,file,download,upload,location,worksheet_name):
         
         #fake worksheet_name used (JTL)
         workbook=openpyxl.load_workbook(file)
-        worksheet=workbook['JTL']
+        worksheet=workbook[worksheet_name]
 
         #USING FAKE LOCATION DEFAULT OF KENYA
 
@@ -240,14 +274,105 @@ class SerenaSpeedTester:
 
         #Store collumn letters
         date_collumns=['B','O']#[DAY,NIGHT]
-        kenya_morning=['I','J']
-        kenya_evening=['V','W']
+        
 
         if(self.time=='evening'):
             cell_no=int(datetime.datetime.now().strftime("%d"))+5
             print('CELL: ',str(date_collumns[1]+'%d')%(cell_no))
+
+            #set date cell
             worksheet[str(date_collumns[1]+'%d')%(cell_no)]=date
-            workbook.save(file)
+            worksheet[str(date_collumns[1]+'%d')%(cell_no)].border=thin_border
+
+            if(location=='kenya'):
+                kenya_evening=['V','W']
+
+                #input download speeds
+                worksheet[str(kenya_evening[0]+'%d')%(cell_no)]=str(download)
+                worksheet[str(kenya_evening[0]+'%d')%(cell_no)].border=thin_border
+                #input upload speeds
+                worksheet[str(kenya_evening[1]+'%d')%(cell_no)]=str(upload)
+                worksheet[str(kenya_evening[1]+'%d')%(cell_no)].border=thin_border
+
+            if(location=='uk'):
+                uk_evening=['P','Q']
+
+                #input download speeds
+                worksheet[str(uk_evening[0]+'%d')%(cell_no)]=str(download)
+                worksheet[str(uk_evening[0]+'%d')%(cell_no)].border=thin_border
+                #input upload speeds
+                worksheet[str(uk_evening[1]+'%d')%(cell_no)]=str(upload)
+                worksheet[str(uk_evening[1]+'%d')%(cell_no)].border=thin_border
+
+            if(location=='usa'):
+                usa_evening=['R','S']
+
+                #input download speeds
+                worksheet[str(usa_evening[0]+'%d')%(cell_no)]=str(download)
+                worksheet[str(usa_evening[0]+'%d')%(cell_no)].border=thin_border
+                #input upload speeds
+                worksheet[str(usa_evening[1]+'%d')%(cell_no)]=str(upload)
+                worksheet[str(usa_evening[1]+'%d')%(cell_no)].border=thin_border
+
+            if(location=='russia'):
+                russia_evening=['T','U']
+
+                #input download speeds
+                worksheet[str(russia_evening[0]+'%d')%(cell_no)]=str(download)
+                worksheet[str(russia_evening[0]+'%d')%(cell_no)].border=thin_border
+                #input upload speeds
+                worksheet[str(russia_evening[1]+'%d')%(cell_no)]=str(upload)
+                worksheet[str(russia_evening[1]+'%d')%(cell_no)].border=thin_border
+
+        if(self.time=='morning'):
+            cell_no=int(datetime.datetime.now().strftime("%d"))+5
+            print('CELL: ',str(date_collumns[1]+'%d')%(cell_no))
+
+            #set date cell
+            worksheet[str(date_collumns[0]+'%d')%(cell_no)]=date
+            worksheet[str(date_collumns[0]+'%d')%(cell_no)].border=thin_border
+
+            if(location=='kenya'):
+                kenya_evening=['I','J']
+
+                #input download speeds
+                worksheet[str(kenya_evening[0]+'%d')%(cell_no)]=str(download)
+                worksheet[str(kenya_evening[0]+'%d')%(cell_no)].border=thin_border
+                #input upload speeds
+                worksheet[str(kenya_evening[1]+'%d')%(cell_no)]=str(upload)
+                worksheet[str(kenya_evening[1]+'%d')%(cell_no)].border=thin_border
+
+            if(location=='uk'):
+                uk_evening=['C','D']
+
+                #input download speeds
+                worksheet[str(uk_evening[0]+'%d')%(cell_no)]=str(download)
+                worksheet[str(uk_evening[0]+'%d')%(cell_no)].border=thin_border
+                #input upload speeds
+                worksheet[str(uk_evening[1]+'%d')%(cell_no)]=str(upload)
+                worksheet[str(uk_evening[1]+'%d')%(cell_no)].border=thin_border
+
+            if(location=='usa'):
+                usa_evening=['E','F']
+
+                #input download speeds
+                worksheet[str(usa_evening[0]+'%d')%(cell_no)]=str(download)
+                worksheet[str(usa_evening[0]+'%d')%(cell_no)].border=thin_border
+                #input upload speeds
+                worksheet[str(usa_evening[1]+'%d')%(cell_no)]=str(upload)
+                worksheet[str(usa_evening[1]+'%d')%(cell_no)].border=thin_border
+
+            if(location=='russia'):
+                russia_evening=['G','H']
+
+                #input download speeds
+                worksheet[str(russia_evening[0]+'%d')%(cell_no)]=str(download)
+                worksheet[str(russia_evening[0]+'%d')%(cell_no)].border=thin_border
+                #input upload speeds
+                worksheet[str(russia_evening[1]+'%d')%(cell_no)]=str(upload)
+                worksheet[str(russia_evening[1]+'%d')%(cell_no)].border=thin_border
+            
+        workbook.save(file)
             
 
     #get speeds in Kenya
@@ -263,12 +388,12 @@ class SerenaSpeedTester:
         print("UPLOAD: ",self.__bytes_to_megabytes__(self.s.results.upload))
 
         file=check_or_createFile()
-        print('adding download and uploads to File: '+file)
+        print('adding download and uploads from Kenya to File: '+file)
         download=self.__bytes_to_megabytes__(self.s.results.download)
         upload=self.__bytes_to_megabytes__(self.s.results.upload)
 
         #fill up sheet(USING JTL AS TEST)
-        self.__enter_speeds_to_file__(file,download,upload,'kenya','JTL')
+        self.__enter_speeds_to_file__(file,download,upload,'kenya',self.getCurrentWorkSheet())
 
     #get speeds in UK
     def getSpeedsByInUK(self):
@@ -282,6 +407,14 @@ class SerenaSpeedTester:
         print("DOWNLOAD: ",self.__bytes_to_megabytes__(self.s.results.download))
         print("UPLOAD: ",self.__bytes_to_megabytes__(self.s.results.upload))
 
+        file=check_or_createFile()
+        print('adding download and uploads from UK to File: '+file)
+        download=self.__bytes_to_megabytes__(self.s.results.download)
+        upload=self.__bytes_to_megabytes__(self.s.results.upload)
+
+        #fill up sheet(USING JTL AS TEST)
+        self.__enter_speeds_to_file__(file,download,upload,'uk',self.getCurrentWorkSheet())
+
     #get speeds in USA
     def getSpeedsByInUS(self):
         self.__usa_server_ids=self.__get_country_servers_by_id__(self.usa_servers)
@@ -294,6 +427,14 @@ class SerenaSpeedTester:
         print("DOWNLOAD: ",self.__bytes_to_megabytes__(self.s.results.download))
         print("UPLOAD: ",self.__bytes_to_megabytes__(self.s.results.upload))
 
+        file=check_or_createFile()
+        print('adding download and uploads from USA to File: '+file)
+        download=self.__bytes_to_megabytes__(self.s.results.download)
+        upload=self.__bytes_to_megabytes__(self.s.results.upload)
+
+        #fill up sheet(USING JTL AS TEST)
+        self.__enter_speeds_to_file__(file,download,upload,'usa',self.getCurrentWorkSheet())
+
     #get speeds in Russia
     def getSpeedsByInRussia(self):
         self.__russia_server_ids=self.__get_country_servers_by_id__(self.russia_servers)
@@ -305,3 +446,11 @@ class SerenaSpeedTester:
         print(self.s.results.share())
         print("DOWNLOAD: ",self.__bytes_to_megabytes__(self.s.results.download))
         print("UPLOAD: ",self.__bytes_to_megabytes__(self.s.results.upload))
+
+        file=check_or_createFile()
+        print('adding download and uploads from Russia to File: '+file)
+        download=self.__bytes_to_megabytes__(self.s.results.download)
+        upload=self.__bytes_to_megabytes__(self.s.results.upload)
+
+        #fill up sheet(USING JTL AS TEST)
+        self.__enter_speeds_to_file__(file,download,upload,'russia',self.getCurrentWorkSheet())
