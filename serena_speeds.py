@@ -254,7 +254,7 @@ class SerenaSpeedTester:
 
     #set worksheet to LQD
     def setWorkSheetLQD(self):
-        self.worksheetName='JTL'
+        self.worksheetName='LQD'
 
     #get current worksheet
     def getCurrentWorkSheet(self):
