@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\msbhbc\Desktop\Brian-Code\PythonSpeedTests\pySpeedTest"
+VIRTUAL_ENV="C:\Users\msbhitsupport.MSBHK\Desktop\BO\Brian-Code\python\PythonSpeedTests\pySpeedTest"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

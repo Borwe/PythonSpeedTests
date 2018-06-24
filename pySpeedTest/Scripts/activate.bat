@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set "VIRTUAL_ENV=C:\Users\msbhbc\Desktop\Brian-Code\PythonSpeedTests\pySpeedTest"
+set "VIRTUAL_ENV=C:\Users\msbhitsupport.MSBHK\Desktop\BO\Brian-Code\python\PythonSpeedTests\pySpeedTest"
 
 if not defined PROMPT (
     set "PROMPT=$P$G"
